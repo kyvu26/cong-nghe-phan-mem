@@ -1,28 +1,24 @@
 from flask import Flask, render_template, request
-from numpy.ma.core import product
-
 import dao
 
 app = Flask(__name__)
 
-
 @app.route("/")
 def index():
-    q = request.args.get("q", "").strip()
+    q = request.args.get("q")
+    cate_id = request.args.get("cate_id")
+    return render_template("index.html", prods=dao.load_products(q=q, cate_id=cate_id))
 
-    cates = dao.load_categories()
-    prods = dao.load_products(q)
+@app.route("/product/<int:id>")
+def details(id):
+    return render_template("prod_detail.html", prod=dao.get_product_by_id(id))
 
-    return render_template(
-        "index.html",
-        cates=cates,
-        prods=prods,
-        q=q
-    )
+@app.context_processor
+def common_attribute():
+    return {
+        "cates": dao.load_categories()
+    }
 
-@app.route("/products/<int:id>")
-def detaild(id):
-    return render_template("product_detail.html", product=product)
 
-if __name__ == "__main__":
+if __name__=="__main__":
     app.run(debug=True)
