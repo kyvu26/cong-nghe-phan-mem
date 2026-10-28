@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request
 import dao
 
-app = Flask(__name__)
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+from saleApp import app
 
 @app.route("/")
 def index():
